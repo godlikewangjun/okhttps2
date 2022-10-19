@@ -377,9 +377,9 @@ public class AHttpTask extends HttpTask<AHttpTask> {
 	}
 
 	
-    private HttpCall executeCall(Call call) {
-        OkHttpCall httpCall = new OkHttpCall(call);
-        call.enqueue(new Callback() {
+    private HttpCall executeCall(Call callN) {
+        OkHttpCall httpCall = new OkHttpCall(callN);
+		callN.enqueue(new Callback() {
 
             @Override
 			@SuppressWarnings("NullableProblems")
@@ -391,6 +391,8 @@ public class AHttpTask extends HttpTask<AHttpTask> {
 					executor.executeOnComplete(AHttpTask.this, onComplete, state, completeOnIO);
 					if (!httpCall.isCanceled() && !executor.executeOnException(AHttpTask.this, httpCall, onException, error, exceptionOnIO)
 							&& !nothrow) {
+						callN.cancel();
+						call.cancel();
 						throw new OkHttpsException(state, "异步请求异常：" + getUrl(), error);
 					}
 				});

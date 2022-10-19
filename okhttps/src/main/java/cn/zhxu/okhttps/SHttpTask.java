@@ -121,6 +121,8 @@ public class SHttpTask extends HttpTask<SHttpTask> {
 		State state = result.getState();
     	if (e != null && state != State.CANCELED
     			&& !nothrow) {
+			result.close();
+			httpCall.cancel();
     		throw new OkHttpsException(state, "同步请求异常：" + getUrl(), e);
     	}
         return result;
